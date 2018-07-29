@@ -1,0 +1,75 @@
+kind: Deployment
+apiVersion: apps/v1beta2
+metadata:
+  name: apachetest
+  labels:
+    k8s-app: apachetest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: apachetest
+  template:
+    metadata:
+      labels:
+        k8s-app: apachetest
+    spec:
+      containers:
+      - name: apachetest
+        image: vitaliyhonta/apachetest
+        imagePullPolicy: Always
+        ports:
+        - name: apachetest
+          containerPort: 80
+---
+kind: Deployment
+apiVersion: apps/v1beta2
+metadata:
+  name: akkahw
+  labels:
+    k8s-app: akkahw
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: akkahw
+  template:
+    metadata:
+      labels:
+        k8s-app: akkahw
+    spec:
+      containers:
+      - name: akkahw
+        image: vitaliyhonta/akka-helloworld
+        imagePullPolicy: Always
+        ports:
+        - name: akkahw
+          containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: apache-server
+  labels:
+    k8s-app: apache-server
+spec:
+  ports:
+  - port: 18080
+    targetPort: 80
+  externalIPs:
+  - 176.241.109.36
+  selector:
+    k8s-app: apache-server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: akkahw
+  labels:
+    k8s-app: akkahw
+spec:
+  ports:
+  - port: 19080
+    targetPort: 8080
+  selector:
+    k8s-app: akkahw
